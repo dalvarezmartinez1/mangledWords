@@ -12,4 +12,13 @@ angular.module('myApp').service('utilSvc', function () {
     return array;
   };
 
+  this.deleteFromArray = (array, item) => {
+    if (array && array.length && item) {
+      const indexOfItem = array.indexOf(item);
+      if (indexOfItem > -1) {
+        array.splice(indexOfItem, 1);
+      }
+    }
+  };
+
 });

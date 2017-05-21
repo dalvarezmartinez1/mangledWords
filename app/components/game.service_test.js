@@ -3,25 +3,32 @@
 describe('gameSvc', function () {
   beforeEach(module('myApp'));
 
-  let wordsSvc, countdownSvc, utilSvc, gameSvc;
+  let wordsSvc, countdownSvc, utilSvc, hallOfFameSvc, gameSvc;
 
-  beforeEach(inject(function (_wordsSvc_, _countdownSvc_, _utilSvc_, _gameSvc_) {
+  beforeEach(inject(function (_wordsSvc_, _countdownSvc_, _utilSvc_, _hallOfFameSvc_, _gameSvc_) {
     wordsSvc = _wordsSvc_;
     countdownSvc = _countdownSvc_;
     utilSvc = _utilSvc_;
+    hallOfFameSvc = _hallOfFameSvc_;
     gameSvc = _gameSvc_;
     spyOn(utilSvc, 'shuffle').and.callThrough();
     spyOn(countdownSvc, 'start').and.callThrough();
     spyOn(countdownSvc, 'stop').and.callThrough();
+    spyOn(hallOfFameSvc, 'updateHallOfFame');
   }));
 
   describe('start', function () {
 
-    it('sets the time to in the model', function () {
+    it('initializes the time, score and currentWordScore in the model', function () {
+      //given
+      wordsSvc.setWords(["someWord"]);
       //when
       gameSvc.start(10);
       //then
-      expect(gameSvc.getModel().time).toBe(10);
+      const model = gameSvc.getModel();
+      expect(model.time).toBe(10);
+      expect(model.score).toBe(0);
+      expect(model.currentWordScore).toBe(5);
     });
 
     it('sets the first word in the model if more words left', function () {
@@ -31,7 +38,6 @@ describe('gameSvc', function () {
       //when
       gameSvc.start(10);
       //then
-      expect(wordsSvc.isMoreWordsLeft).toHaveBeenCalled();
       expect(wordsSvc.getNextWord).toHaveBeenCalled();
       const model = gameSvc.getModel();
       expect(model.currentWord.length).not.toBe(0);
@@ -39,15 +45,14 @@ describe('gameSvc', function () {
       expect(model.currentWord.length === model.mangledWord.length).toBe(true);
     });
 
-    it('does not set the first word in the model if no more words left', function () {
+    it('if no more words left, stop the timer and update the hall of fame ', function () {
       //given
-      spyOn(wordsSvc, 'isMoreWordsLeft').and.returnValue(false);
-      spyOn(wordsSvc, 'getNextWord').and.callThrough();
+      wordsSvc.setWords([]);
       //when
       gameSvc.start(10);
       //then
-      expect(wordsSvc.isMoreWordsLeft).toHaveBeenCalled();
-      expect(wordsSvc.getNextWord).not.toHaveBeenCalled();
+      expect(countdownSvc.stop).toHaveBeenCalled();
+      expect(hallOfFameSvc.updateHallOfFame).toHaveBeenCalled();
     });
 
   });
@@ -85,8 +90,7 @@ describe('gameSvc', function () {
       //when
       gameSvc.onInputFromUser();
       //then
-      expect(wordsSvc.isMoreWordsLeft).toHaveBeenCalled();
-      expect(wordsSvc.getNextWord).not.toHaveBeenCalled();
+      expect(wordsSvc.getNextWord).toHaveBeenCalled();
     });
 
   });

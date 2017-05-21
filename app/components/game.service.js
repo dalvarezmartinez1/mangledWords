@@ -1,19 +1,28 @@
 'use strict';
 
-angular.module('myApp').service('gameSvc', function (wordsSvc, countdownSvc, utilSvc) {
+angular.module('myApp').service('gameSvc', function (wordsSvc, countdownSvc, utilSvc, hallOfFameSvc) {
+
+  const onGameFinished = () => {
+    hallOfFameSvc.updateHallOfFame(model.score);
+    countdownSvc.stop();
+  };
 
   var model = {
     'time': 0,
-    'score': '0',
+    'score': 0,
+    'currentWordScore': 0,
     'currentWord': '',
     'userGuess': '',
     'previousUserGuess': '',
-    'mangledWord': ''
+    'mangledWord': '',
+    'onTimeout': onGameFinished
   };
 
   this.start = (gameDuration) => {
     wordsSvc.shuffleWords();
     model.time = gameDuration;
+    model.score = 0;
+    model.currentWordScore = 0;
     countdownSvc.start(model);
     setNextWord();
   };
@@ -23,21 +32,25 @@ angular.module('myApp').service('gameSvc', function (wordsSvc, countdownSvc, uti
   };
 
   const setNextWord = () => {
-    if (wordsSvc.isMoreWordsLeft()) {
-      wordsSvc.getNextWord((word) => {
+    wordsSvc.getNextWord((word) => {
+      if (word) {
         model.currentWord = word;
         model.userGuess = '';
         model.previousUserGuess = '';
+        model.currentWordScore = Math.floor(Math.pow(1.95, (word.length / 3)));
         model.mangledWord = utilSvc.shuffle(word.split('')).join('');
-      });
-    }
+      } else {
+        onGameFinished();
+      }
+    });
   };
 
   this.onInputFromUser = () => {
     if (model.currentWord === model.userGuess) {
+      model.score += model.currentWordScore > 0 ? model.currentWordScore : 0;
       setNextWord();
     } else if (model.userGuess.length < model.previousUserGuess.length) {
-      console.log('Deleted chars!');
+      model.currentWordScore -= model.previousUserGuess.length - model.userGuess.length;
     }
     model.previousUserGuess = model.userGuess;
   };
