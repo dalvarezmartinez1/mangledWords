@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp').service('hallOfFameSvc', function ($timeout, utilSvc) {
+angular.module('myApp').service('hallOfFameSvc', function ($timeout, utilSvc, hallOfFameRestSvc) {
   let currentPlayer;
   let players = [];
   let smallestScorePlayer;
@@ -10,14 +10,20 @@ angular.module('myApp').service('hallOfFameSvc', function ($timeout, utilSvc) {
   };
 
   this.updateHallOfFame = (score) => {
-    if (score > smallestScorePlayer.score) {
-      //make rest request
-      utilSvc.deleteFromArray(players, smallestScorePlayer);
-      players.push({
+    if (smallestScorePlayer && score > smallestScorePlayer.score) {
+      let currentPlayerObj = {
         'name': currentPlayer,
         'score': score
+      };
+      hallOfFameRestSvc.saveNewPlayerResult(currentPlayerObj, () => {
+        if (players.length === hallOfFameRestSvc.HALL_OF_FAME_SIZE) {
+          utilSvc.deleteFromArray(players, smallestScorePlayer);
+        }
+        players.push(currentPlayerObj);
+        updateSmallestScorePlayer(players);
+      }, function (error) {
+        console.error(`Could not save the new result due to: ${error}`);
       });
-      updateSmallestScorePlayer(players);
     }
   };
 
@@ -41,25 +47,15 @@ angular.module('myApp').service('hallOfFameSvc', function ($timeout, utilSvc) {
   };
 
   const init = () => {
-    new Promise((resolve, reject) => {
-      $timeout(() => resolve([{
-        'name': 'X',
-        'score': 200
-      }, {
-        'name': 'Y',
-        'score': 100
-      }, {
-        'name': 'Z',
-        'score': 400
-      }]), 1000);
-    }).then((arrayOfPlayers) => {
-      $timeout(() => {
-        angular.copy(arrayOfPlayers, players);
-        updateSmallestScorePlayer(players);
-      }, 0);
+    hallOfFameRestSvc.getPlayersFromBackend((playersArray) => {
+      angular.copy(playersArray, players);
+      updateSmallestScorePlayer(players);
+    }, (error) => {
+      console.error(`Could not get players from backend ${error}`);
     });
   };
 
-  init();
+  //Bug in Backendless, otherwise I would not do this.
+  $timeout(init, 2000);
 
 });

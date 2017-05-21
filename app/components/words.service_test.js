@@ -3,13 +3,15 @@
 describe('wordsSvc', function () {
   beforeEach(module('myApp'));
 
-  let wordsSvc, $timeout, utilSvc;
+  let wordsSvc, $timeout, utilSvc, wordsRestSvc;
 
-  beforeEach(inject(function (_wordsSvc_, _$timeout_, _utilSvc_) {
+  beforeEach(inject(function (_$timeout_, _utilSvc_, _wordsRestSvc_, _wordsSvc_) {
     wordsSvc = _wordsSvc_;
     $timeout = _$timeout_;
     utilSvc = _utilSvc_;
+    wordsRestSvc = _wordsRestSvc_;
     spyOn(utilSvc, 'shuffle').and.callThrough();
+    spyOn(wordsRestSvc, 'getWordsFromBackEnd');
   }));
 
   describe('getNextWord', function () {

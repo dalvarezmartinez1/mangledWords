@@ -33,6 +33,7 @@ describe('gameSvc', function () {
 
     it('sets the first word in the model if more words left', function () {
       //given
+      wordsSvc.setWords(["someWord"]);
       spyOn(wordsSvc, 'isMoreWordsLeft').and.returnValue(true);
       spyOn(wordsSvc, 'getNextWord').and.callThrough();
       //when

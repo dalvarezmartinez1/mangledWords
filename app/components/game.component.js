@@ -9,7 +9,7 @@ angular.module('myApp').component('game', {
           <input data-ng-model="$ctrl.model.userGuess" data-ng-change="$ctrl.onInputFromUser()"/>
         </div>
         <div data-ng-show="!$ctrl.isMoreWordsLeft() || $ctrl.isTimeout()">
-          <p data-ng-show="$ctrl.isMoreWordsLeft()">Congratulations! There are no more words left!</p>
+          <p data-ng-show="!$ctrl.isMoreWordsLeft()">Congratulations! There are no more words left!</p>
           <p>Your score is: {{$ctrl.model.score}}</p>
           <a class="btn btn-success" href="#!/hall-of-fame">Hall of fame</a>
         </div>
