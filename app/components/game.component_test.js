@@ -3,8 +3,8 @@
 describe('game.component', function () {
   beforeEach(module('myApp'));
 
-  var ctrl;
-  var countdownSvc;
+  let ctrl;
+  let countdownSvc;
 
   beforeEach(inject(function (_$componentController_, _countdownSvc_) {
     countdownSvc = _countdownSvc_;
@@ -21,7 +21,7 @@ describe('game.component', function () {
 
   it("is initialized correctly", function () {
     //then
-    expect(ctrl.countdown.time).toBe(40);
+    expect(ctrl.model.time).toBe(40);
   });
 
   it("countdownSvc.start is called after init", function () {

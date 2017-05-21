@@ -3,8 +3,8 @@
 describe('hall-of-fame.component', function () {
   beforeEach(module('myApp'));
 
-  var ctrl;
-  var hallOfFameSvc;
+  let ctrl;
+  let hallOfFameSvc;
 
   beforeEach(inject(function (_$componentController_, _hallOfFameSvc_) {
     hallOfFameSvc = _hallOfFameSvc_;
@@ -20,7 +20,7 @@ describe('hall-of-fame.component', function () {
     expect(ctrl.players).toBeDefined();
   });
 
-  it("getPlayers is called after init", function () {
+  it("players are defined after init", function () {
     //then
     expect(hallOfFameSvc.getPlayers).toHaveBeenCalled();
   });

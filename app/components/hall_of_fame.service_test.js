@@ -3,8 +3,8 @@
 describe('hall-of-fame.service', function () {
   beforeEach(module('myApp'));
 
-  var $timeout;
-  var hallOfFameSvc;
+  let $timeout;
+  let hallOfFameSvc;
 
   beforeEach(inject(function (_$timeout_, _hallOfFameSvc_) {
     $timeout = _$timeout_;
