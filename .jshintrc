@@ -1,5 +1,6 @@
 {
   "strict": "global",
+  "esversion": 6,
   "globals": {
     // Angular
     "angular": false,
@@ -9,7 +10,7 @@
     "inject": false,
 
     // Jasmine
-    "jasmine": false,
+    "jasmine": true,
     "describe": false,
     "beforeEach": false,
     "afterEach": false,
