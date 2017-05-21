@@ -3,17 +3,15 @@
 angular.module('myApp').component('game', {
     template: `
       <div>
-        <div data-ng-show="$ctrl.isMoreWordsLeft() === true && !$ctrl.isTimeout()">
-          <span >Time: {{$ctrl.model.time}}</span>
-          <div>
-            <span>{{$ctrl.model.mangledWord}}</span>
-          </div>
+        <div data-ng-show="$ctrl.isMoreWordsLeft() && !$ctrl.isTimeout()">
+          <p>Time: {{$ctrl.model.time}}</p>
+          <p>Word to guess: {{$ctrl.model.mangledWord}}</p>
           <input data-ng-model="$ctrl.model.userGuess" data-ng-change="$ctrl.onInputFromUser()"/>
         </div>
-        <div data-ng-show="$ctrl.isMoreWordsLeft() === false || $ctrl.isTimeout()">
-          <span data-ng-show="$ctrl.isMoreWordsLeft() === false">Congratulations! There are no more words left!</span>
-          <span>Your score is: {{$ctrl.model.score}}</span>
-          <a href="#!/hall-of-fame">Hall of fame</a>
+        <div data-ng-show="!$ctrl.isMoreWordsLeft() || $ctrl.isTimeout()">
+          <p data-ng-show="$ctrl.isMoreWordsLeft()">Congratulations! There are no more words left!</p>
+          <p>Your score is: {{$ctrl.model.score}}</p>
+          <a class="btn btn-success" href="#!/hall-of-fame">Hall of fame</a>
         </div>
       </div>
     `,

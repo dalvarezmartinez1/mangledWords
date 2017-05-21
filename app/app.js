@@ -11,4 +11,15 @@ angular.module('myApp', ['ngRoute']).config(['$locationProvider', '$routeProvide
     template: '<hall-of-fame></hall-of-fame>'
   }).otherwise('/home');
 
-}]);
+}]).run(function ($location, $rootScope, hallOfFameSvc) {
+  if ($location.path() !== '/home') {
+    $location.path("/home");
+  }
+
+  $rootScope.$on('$locationChangeStart', (event) => {
+    if ($location.path() !== '/home' && !hallOfFameSvc.getCurrentPlayer()) {
+      event.preventDefault();
+    }
+  });
+
+});

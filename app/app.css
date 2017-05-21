@@ -1,0 +1,26 @@
+body {
+  padding-top: 50px;
+  font: 20px Georgia, Serif;
+}
+
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+home div.required:after {
+  content:" *";
+  color:red;
+}
+
+home button {
+  margin-top: 1vh;
+}
+
+hall-of-fame ul {
+  list-style-type: none;
+}
+
+hall-of-fame ul li:nth-child(odd) {
+   background-color: #e6e8ed;
+}
