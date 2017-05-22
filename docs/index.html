@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" class="no-js">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>My AngularJS App</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#!/home">Mangled words</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="starter-template">
+        <div ng-view></div>
+      </div>
+    </div>
+
+  <script src="//api.backendless.com/sdk/js/v4/beta/backendless.min.js"></script>
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-route/angular-route.min.js"></script>
+  <script src="app.js"></script>
+  <script src="components/backendless.service.js"></script>
+  <script src="components/words.rest.service.js"></script>
+  <script src="components/hall-of-fame.rest.service.js"></script>
+  <script src="components/words.service.js"></script>
+  <script src="components/game.service.js"></script>
+  <script src="components/util.service.js"></script>
+  <script src="components/countdownSvc.service.js"></script>
+  <script src="components/hall-of-fame.service.js"></script>
+  <script src="components/game.component.js"></script>
+  <script src="components/hall-of-fame.component.js"></script>
+  <script src="components/home.component.js"></script>
+</body>
+
+</html>
