@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('myApp').component('game', {
-    template: `
-      <div>
+  template: `
+      <div data-ng-show="$ctrl.isGameReady()">
         <div data-ng-show="$ctrl.isMoreWordsLeft() && !$ctrl.isTimeout()">
           <p>Time: {{$ctrl.model.time}}</p>
           <p>Word to guess: {{$ctrl.model.mangledWord}}</p>
@@ -15,32 +15,36 @@ angular.module('myApp').component('game', {
         </div>
       </div>
     `,
-    controller: function GameController(gameSvc) {
-      const ctrl = this;
-      
-      ctrl.isMoreWordsLeft = () => {
-        return gameSvc.isMoreWordsLeft();
-      };
-      
-      ctrl.isTimeout = () => {
-        return gameSvc.isTimeout();
-      };
-      
-      ctrl.onInputFromUser = () => {
-        gameSvc.onInputFromUser();
-      };
-      
-      ctrl.$onDestroy = () => {
-        gameSvc.stop();
-      };
-      
-      ctrl.$onInit = () => {
-        ctrl.model = gameSvc.getModel();
-        gameSvc.start(ctrl.initTime);
-      };
-      
-    },
-    bindings: {
-      initTime: '@time'
-    }
+  controller: function GameController(gameSvc) {
+    const ctrl = this;
+
+    ctrl.isMoreWordsLeft = () => {
+      return gameSvc.isMoreWordsLeft();
+    };
+
+    ctrl.isGameReady = () => {
+      return gameSvc.isGameReady();
+    };
+
+    ctrl.isTimeout = () => {
+      return gameSvc.isTimeout();
+    };
+
+    ctrl.onInputFromUser = () => {
+      gameSvc.onInputFromUser();
+    };
+
+    ctrl.$onDestroy = () => {
+      gameSvc.stop();
+    };
+
+    ctrl.$onInit = () => {
+      ctrl.model = gameSvc.getModel();
+      gameSvc.start(ctrl.initTime);
+    };
+
+  },
+  bindings: {
+    initTime: '@time'
+  }
 });

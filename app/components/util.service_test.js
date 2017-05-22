@@ -1,7 +1,12 @@
 'use strict';
 
 describe('utilSvc', function () {
-  beforeEach(module('myApp'));
+  beforeEach(module('myApp', function ($provide) {
+
+    $provide.value('backendlessSvc', {
+      init: () => {}
+    });
+  }));
 
   let utilSvc;
 

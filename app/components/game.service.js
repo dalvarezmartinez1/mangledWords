@@ -2,6 +2,8 @@
 
 angular.module('myApp').service('gameSvc', function (wordsSvc, countdownSvc, utilSvc, hallOfFameSvc) {
 
+  let isGameReady = false;
+
   const onGameFinished = () => {
     hallOfFameSvc.updateHallOfFame(model.score);
     countdownSvc.stop();
@@ -33,6 +35,7 @@ angular.module('myApp').service('gameSvc', function (wordsSvc, countdownSvc, uti
 
   const setNextWord = () => {
     wordsSvc.getNextWord((word) => {
+      isGameReady = true;
       if (word) {
         model.currentWord = word;
         model.userGuess = '';
@@ -53,6 +56,10 @@ angular.module('myApp').service('gameSvc', function (wordsSvc, countdownSvc, uti
       model.currentWordScore -= model.previousUserGuess.length - model.userGuess.length;
     }
     model.previousUserGuess = model.userGuess;
+  };
+
+  this.isGameReady = () => {
+    return isGameReady;
   };
 
   this.isMoreWordsLeft = () => {

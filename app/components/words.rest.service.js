@@ -1,20 +1,18 @@
 'use strict';
 
-angular.module('myApp').service('wordsRestSvc', function ($timeout) {
+angular.module('myApp').service('wordsRestSvc', function ($q) {
   const DB_TABLE_NAME = 'WORDS';
 
   this.getWordsFromBackEnd = (callbackSuccess, callbackError) => {
+    let defered = $q.defer();
     let queryBuilder = Backendless.DataQueryBuilder.create();
     Backendless.Data.of(DB_TABLE_NAME).find(queryBuilder).then((wordsArray) => {
       wordsArray = wordsArray.map((obj) => obj.word);
-      $timeout(() => {
-        callbackSuccess(wordsArray);
-      });
+      defered.resolve(wordsArray);
     }).catch(function (error) {
-      $timeout(() => {
-        callbackError(error);
-      });
+      defered.reject(error);
     });
+    return defered.promise;
   };
 
 });

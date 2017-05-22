@@ -1,7 +1,12 @@
 'use strict';
 
 describe('hall-of-fame.component', function () {
-  beforeEach(module('myApp'));
+  beforeEach(module('myApp', function ($provide) {
+
+    $provide.value('backendlessSvc', {
+      init: () => {}
+    });
+  }));
 
   let ctrl;
   let hallOfFameSvc;

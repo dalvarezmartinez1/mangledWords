@@ -1,7 +1,17 @@
 'use strict';
 
 describe('game.component', function () {
-  beforeEach(module('myApp'));
+  beforeEach(module('myApp', function ($provide) {
+
+    $provide.value('backendlessSvc', {
+      init: () => {}
+    });
+
+    $provide.value('wordsSvc', {
+      'shuffleWords': angular.noop,
+      'getNextWord': angular.noop
+    });
+  }));
 
   let ctrl;
   let countdownSvc;

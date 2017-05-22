@@ -15,13 +15,13 @@ angular.module('myApp').service('hallOfFameSvc', function ($timeout, utilSvc, ha
         'name': currentPlayer,
         'score': score
       };
-      hallOfFameRestSvc.saveNewPlayerResult(currentPlayerObj, () => {
+      hallOfFameRestSvc.saveNewPlayerResult(currentPlayerObj).then(() => {
         if (players.length === hallOfFameRestSvc.HALL_OF_FAME_SIZE) {
           utilSvc.deleteFromArray(players, smallestScorePlayer);
         }
         players.push(currentPlayerObj);
         updateSmallestScorePlayer(players);
-      }, function (error) {
+      }).catch(function (error) {
         console.error(`Could not save the new result due to: ${error}`);
       });
     }
@@ -47,10 +47,10 @@ angular.module('myApp').service('hallOfFameSvc', function ($timeout, utilSvc, ha
   };
 
   const init = () => {
-    hallOfFameRestSvc.getPlayersFromBackend((playersArray) => {
+    hallOfFameRestSvc.getPlayersFromBackend().then((playersArray) => {
       angular.copy(playersArray, players);
       updateSmallestScorePlayer(players);
-    }, (error) => {
+    }).catch((error) => {
       console.error(`Could not get players from backend ${error}`);
     });
   };

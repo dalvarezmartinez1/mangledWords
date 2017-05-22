@@ -1,7 +1,12 @@
 'use strict';
 
 describe('countdownSvc', function () {
-  beforeEach(module('myApp'));
+  beforeEach(module('myApp', function ($provide) {
+
+    $provide.value('backendlessSvc', {
+      init: () => {}
+    });
+  }));
 
   var $interval;
   var countdownConfig;

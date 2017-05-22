@@ -1,17 +1,31 @@
 'use strict';
 
 describe('wordsSvc', function () {
-  beforeEach(module('myApp'));
+  let mockRestSvcDefered;
 
-  let wordsSvc, $timeout, utilSvc, wordsRestSvc;
+  beforeEach(module('myApp', function ($provide) {
 
-  beforeEach(inject(function (_$timeout_, _utilSvc_, _wordsRestSvc_, _wordsSvc_) {
-    wordsSvc = _wordsSvc_;
-    $timeout = _$timeout_;
-    utilSvc = _utilSvc_;
-    wordsRestSvc = _wordsRestSvc_;
+    $provide.value('backendlessSvc', {
+      init: () => {}
+    });
+
+    $provide.value('wordsRestSvc', {
+      getWordsFromBackEnd: function () {
+        return mockRestSvcDefered.promise;
+      }
+    });
+  }));
+
+  let wordsSvc, utilSvc, wordsRestSvc, $rootScope;
+
+  beforeEach(inject(function ($injector) {
+    const $q = $injector.get('$q');
+    $rootScope = $injector.get('$rootScope');
+    mockRestSvcDefered = $q.defer();
+    wordsRestSvc = $injector.get('wordsRestSvc');
+    utilSvc = $injector.get('utilSvc');
+    wordsSvc = $injector.get('wordsSvc');
     spyOn(utilSvc, 'shuffle').and.callThrough();
-    spyOn(wordsRestSvc, 'getWordsFromBackEnd');
   }));
 
   describe('getNextWord', function () {
@@ -21,13 +35,14 @@ describe('wordsSvc', function () {
         'callback': function () {}
       };
       spyOn(spy, 'callback');
-      wordsSvc.setWords([]);
+      mockRestSvcDefered.resolve([]);
+      $rootScope.$digest();
       //when
-      wordsSvc.getNextWord(spy.callback);
+      let promise = wordsSvc.getNextWord(spy.callback);
+      $rootScope.$digest();
       //then
       expect(spy.callback).toHaveBeenCalledWith(undefined);
     });
-
 
     it('returns the last word if one more word left', function () {
       //given
@@ -36,9 +51,11 @@ describe('wordsSvc', function () {
       };
       spyOn(spy, 'callback');
       const arrayOfWords = ["Some word"];
-      wordsSvc.setWords(arrayOfWords);
+      mockRestSvcDefered.resolve(arrayOfWords);
+      $rootScope.$digest();
       //when
       wordsSvc.getNextWord(spy.callback);
+      $rootScope.$digest();
       //then
       expect(spy.callback).toHaveBeenCalledWith(arrayOfWords[0]);
     });
@@ -54,33 +71,38 @@ describe('wordsSvc', function () {
       };
       spyOn(spy, 'callback');
       const arrayOfWords = ["Some word"];
-      wordsSvc.setWords(arrayOfWords);
+      mockRestSvcDefered.resolve(arrayOfWords);
+      $rootScope.$digest();
       //when
       wordsSvc.getNextWord(spy.callback);
+      $rootScope.$digest();
       //then
       expect(spy.callback).toHaveBeenCalledWith(arrayOfWords[0]);
       //when
       wordsSvc.shuffleWords();
       wordsSvc.getNextWord(spy.callback);
+      $rootScope.$digest();
       //then
       expect(utilSvc.shuffle).toHaveBeenCalled();
       expect(spy.callback).toHaveBeenCalledWith(arrayOfWords[0]);
     });
 
   });
-  
+
   describe('isMoreWordsLeft', function () {
 
     it('returns false if the words array is empty', function () {
       //given
-      wordsSvc.setWords([]);
+      mockRestSvcDefered.resolve([]);
+      $rootScope.$digest();
       //then
       expect(wordsSvc.isMoreWordsLeft()).toBe(false);
     });
-    
+
     it('returns true, even after we get the last word! That is because we need to show this last word!', function () {
       //given
-      wordsSvc.setWords(["someWord"]);
+      mockRestSvcDefered.resolve(["someWord"]);
+      $rootScope.$digest();
       //when
       wordsSvc.getNextWord(angular.noop);
       //then

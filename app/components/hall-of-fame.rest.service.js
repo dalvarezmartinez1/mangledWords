@@ -1,11 +1,12 @@
 'use strict';
 
-angular.module('myApp').service('hallOfFameRestSvc', function ($timeout) {
+angular.module('myApp').service('hallOfFameRestSvc', function ($q) {
   const DB_TABLE_NAME = 'HALLOFFAME';
   let self = this;
   this.HALL_OF_FAME_SIZE = 10;
 
-  this.getPlayersFromBackend = (callbackSuccess, callbackError) => {
+  this.getPlayersFromBackend = () => {
+    let defered = $q.defer();
     let queryBuilder = Backendless.DataQueryBuilder.create();
     queryBuilder.setSortBy(["score DESC"]);
     queryBuilder.setPageSize(self.HALL_OF_FAME_SIZE);
@@ -18,25 +19,22 @@ angular.module('myApp').service('hallOfFameRestSvc', function ($timeout) {
             'score': obj.score
           };
         });
-        executeCallback(callbackSuccess, playersArray);
+        defered.resolve(playersArray);
       }).catch(function (error) {
-        executeCallback(callbackError, error);
+        defered.reject(error);
       });
+    return defered.promise;
   };
 
-  this.saveNewPlayerResult = (currentPlayerObj, callbackSuccess, callbackError) => {
+  this.saveNewPlayerResult = (currentPlayerObj) => {
+    let defered = $q.defer();
     Backendless.Data.of(DB_TABLE_NAME).save(currentPlayerObj)
       .then((result) => {
-        executeCallback(callbackSuccess, result);
+        defered.resolve(result);
       }).catch(function (error) {
-        executeCallback(callbackError, error);
+        defered.reject(error);
       });
-  };
-
-  const executeCallback = (callback, param) => {
-    $timeout(() => {
-      callback(param);
-    }, 0);
+    return defered.promise;
   };
 
 });

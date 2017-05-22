@@ -2,5 +2,5 @@
 
 describe('home.component', function () {
   beforeEach(module('myApp'));
-  
+
 });

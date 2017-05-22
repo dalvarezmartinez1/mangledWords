@@ -1,7 +1,18 @@
 'use strict';
 
 describe('gameSvc', function () {
-  beforeEach(module('myApp'));
+  beforeEach(module('myApp', function ($provide) {
+
+    $provide.value('backendlessSvc', {
+      init: () => {}
+    });
+
+    $provide.value('wordsSvc', {
+      shuffleWords: () => {},
+      isMoreWordsLeft: () => {},
+      getNextWord: () => {}
+    });
+  }));
 
   let wordsSvc, countdownSvc, utilSvc, hallOfFameSvc, gameSvc;
 
@@ -19,23 +30,36 @@ describe('gameSvc', function () {
 
   describe('start', function () {
 
-    it('initializes the time, score and currentWordScore in the model', function () {
+    it('expects the game to be ready when we receive the first word', function () {
       //given
-      wordsSvc.setWords(["someWord"]);
+      spyOn(wordsSvc, 'getNextWord').and.callFake((cbk) => {
+        cbk("someWord");
+      });
+      //then
+      expect(gameSvc.isGameReady()).toBe(false);
+      //when
+      gameSvc.start(10);
+      //then
+      expect(gameSvc.isGameReady()).toBe(true);
+    });
+
+
+    it('initializes the time, score and currentWordScore in the model', function () {
       //when
       gameSvc.start(10);
       //then
       const model = gameSvc.getModel();
       expect(model.time).toBe(10);
       expect(model.score).toBe(0);
-      expect(model.currentWordScore).toBe(5);
+      expect(model.currentWordScore).toBe(0);
     });
 
     it('sets the first word in the model if more words left', function () {
       //given
-      wordsSvc.setWords(["someWord"]);
       spyOn(wordsSvc, 'isMoreWordsLeft').and.returnValue(true);
-      spyOn(wordsSvc, 'getNextWord').and.callThrough();
+      spyOn(wordsSvc, 'getNextWord').and.callFake((cbk) => {
+        cbk("someWord");
+      });
       //when
       gameSvc.start(10);
       //then
@@ -48,7 +72,9 @@ describe('gameSvc', function () {
 
     it('if no more words left, stop the timer and update the hall of fame ', function () {
       //given
-      wordsSvc.setWords([]);
+      spyOn(wordsSvc, 'getNextWord').and.callFake((cbk) => {
+        cbk(undefined);
+      });
       //when
       gameSvc.start(10);
       //then

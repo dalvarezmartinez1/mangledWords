@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('myApp').service('wordsSvc', function (utilSvc, $timeout, $q, wordsRestSvc) {
+angular.module('myApp').service('wordsSvc', function (utilSvc, wordsRestSvc) {
+  let self = this;
   let words = [];
   let currentIndex = 0;
   let dataPromise;
@@ -12,7 +13,7 @@ angular.module('myApp').service('wordsSvc', function (utilSvc, $timeout, $q, wor
 
   this.getNextWord = (callback) => {
     dataPromise.then(() => {
-      callback(words[currentIndex++])
+      callback(words[currentIndex++]);
     });
   };
 
@@ -20,22 +21,14 @@ angular.module('myApp').service('wordsSvc', function (utilSvc, $timeout, $q, wor
     return !!words.length && currentIndex <= words.length;
   };
 
-  this.setWords = (wordsList) => {
-    words = wordsList;
-  };
-
   const init = () => {
-    const deferred = $q.defer();
+    dataPromise = wordsRestSvc.getWordsFromBackEnd();
 
-    wordsRestSvc.getWordsFromBackEnd((arrayOfWords) => {
-      deferred.resolve(arrayOfWords);
+    dataPromise.then((arrayOfWords) => {
       angular.copy(arrayOfWords, words);
-    }, (error) => {
-      deferred.reject(error);
+    }).catch((error) => {
       console.error(`Cannot obtain words due to ${error}`);
     });
-    
-    dataPromise = deferred.promise;
   };
 
   init();
