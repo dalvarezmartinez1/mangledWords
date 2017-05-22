@@ -2,7 +2,7 @@
 
 The game is really simple, you've got 40 seconds, we present you mangled words your job is to find out the original words.
 
-A deployment of this can be seen at: http://dalvarezmartinez1.github.io.
+A deployment of this can be seen at: https://dalvarezmartinez1.github.io/mangledWords/
 
 ## Getting Started
 
